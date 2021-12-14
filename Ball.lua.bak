@@ -39,8 +39,8 @@ end
 function Ball:reset()
 	self.x = VIRTUAL_WIDTH / 2 - 2
     self.y = VIRTUAL_HEIGHT / 2 - 2
-    resetHorizontalVelocity(false)
-	resetVerticalVelocity()
+    self.resetHorizontalVelocity()
+	self.resetVerticalVelocity()
 end
 
 function Ball:update(dt)

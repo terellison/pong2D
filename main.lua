@@ -10,10 +10,12 @@ WINDOW_HEIGHT = 720
 VIRTUAL_WIDTH = 432
 VIRTUAL_HEIGHT = 243
 
-PADDLE_SPEED = 200
+PADDLE_SPEED = 400
 
 function love.load()
 	love.graphics.setDefaultFilter('nearest','nearest')
+	
+	love.window.setTitle('Pong')
 	
 	math.randomseed(os.time())
 	
@@ -38,14 +40,79 @@ function love.load()
 	ball = Ball(VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
 	
 	gameState = 'start'
+	servingPlayer = math.random(1,2)
 end
 
 
 function love.update(dt)
+	if gameState == 'serve' then
+		ball:resetVerticalVelocity()
+		
+		if servingPlayer == 1 then
+			ball:resetHorizontalVelocity(false)
+		else
+			ball:resetHorizontalVelocity(true)
+		end
+	
+		
+	elseif gameState == 'play' then
+	
+		if ball:collides(player1) then
+			ball.dx = -(ball.dx * 1.50)
+			ball.x = player1.x + 5
+			
+			if ball.dy < 0 then
+				ball.dy = -math.random(10, 150)
+			else
+				ball.dy = math.random(10, 150)
+			end
+		end
+		
+		if ball:collides(player2) then
+			ball.dx = -(ball.dx * 1.50)
+			ball.x = player2.x - 4
+			
+			-- randomize the y velocity
+			if ball.dy < 0 then
+				ball.dy = -math.random(40, 150)
+			else
+				ball.dy = math.random(40, 150)
+			end
+		end
+		
+		 -- detect upper and lower screen boundary collision and reverse if collided
+        if ball.y <= 0 then
+            ball.y = 0
+            ball.dy = -ball.dy
+        end
 
+        -- -4 to account for the ball's size
+        if ball.y >= VIRTUAL_HEIGHT - 4 then
+            ball.y = VIRTUAL_HEIGHT - 4
+            ball.dy = -ball.dy
+        end
+		
+		-- same for left and right bounds
+		if ball.x <= 0 then
+            player2Score = player2Score + 1
+			servingPlayer = 1
+			gameState = 'serve'
+			ball:reset()
+        end
+
+        -- -4 to account for the ball's size
+        if ball.x >= VIRTUAL_WIDTH - 4 then
+            player1Score = player1Score + 1
+			servingPlayer = 2
+			gameState = 'serve'
+            ball:reset()
+        end
+	end
+	
+	
 	-- player 1 movement
 	if love.keyboard.isDown('w') then
-		player1.dy = -PADDLE_SPEED
+		player1.dy = -PADDLE_SPEED + 30
 	elseif love.keyboard.isDown('s') then
 		player1.dy = PADDLE_SPEED
 	else
@@ -115,5 +182,13 @@ function love.draw()
 	
 	ball:render() -- ball
 	
+	displayFPS()
+	
 	push:apply('end')
+end
+
+function displayFPS()
+	love.graphics.setFont(smallFont)
+	love.graphics.setColor(0, 255/255, 0, 255/255)
+	love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
 end
