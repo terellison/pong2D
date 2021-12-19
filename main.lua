@@ -46,19 +46,19 @@ end
 
 function love.update(dt)
 	if gameState == 'serve' then
-		ball:resetVerticalVelocity()
+		ball.dy = (math.random(-1,1) * math.random(250,250))
 		
-		if servingPlayer == 1 then
-			ball:resetHorizontalVelocity(false)
-		else
-			ball:resetHorizontalVelocity(true)
+		ball.dx = math.random(150,250)
+		
+		if servingPlayer == 2 then
+			ball.dx = ball.dx * -1
 		end
 	
 		
 	elseif gameState == 'play' then
 	
 		if ball:collides(player1) then
-			ball.dx = -(ball.dx * 1.50)
+			ball.dx = -(ball.dx * 1.03)
 			ball.x = player1.x + 5
 			
 			if ball.dy < 0 then
@@ -69,7 +69,7 @@ function love.update(dt)
 		end
 		
 		if ball:collides(player2) then
-			ball.dx = -(ball.dx * 1.50)
+			ball.dx = -(ball.dx * 1.03)
 			ball.x = player2.x - 4
 			
 			-- randomize the y velocity
