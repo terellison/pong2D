@@ -21,6 +21,8 @@ function love.load()
 	
 	smallFont = love.graphics.newFont('font.ttf', 8)
 	
+	largeFont = love.graphics.newFont('font.ttf', 16)
+	
 	scoreFont = love.graphics.newFont('font.ttf', 32) -- font for the score(s)
 	
 	love.graphics.setFont(smallFont)
@@ -40,15 +42,15 @@ function love.load()
 	ball = Ball(VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
 	
 	gameState = 'start'
-	servingPlayer = math.random(1,2)
+	servingPlayer = math.random(2)
 end
 
 
 function love.update(dt)
 	if gameState == 'serve' then
-		ball.dy = (math.random(-1,1) * math.random(250,250))
+		ball.dy = math.random(-50,50)
 		
-		ball.dx = math.random(150,250)
+		ball.dx = math.random(140,100)
 		
 		if servingPlayer == 2 then
 			ball.dx = ball.dx * -1
@@ -94,18 +96,29 @@ function love.update(dt)
 		
 		-- same for left and right bounds
 		if ball.x <= 0 then
-            player2Score = player2Score + 1
 			servingPlayer = 1
-			gameState = 'serve'
-			ball:reset()
+            player2Score = player2Score + 1
+			if player2Score == 10 then
+				winningPlayer = 2
+				gameState = 'done'
+			else
+				gameState = 'serve'
+				ball:reset()
+			end
         end
 
         -- -4 to account for the ball's size
         if ball.x >= VIRTUAL_WIDTH - 4 then
             player1Score = player1Score + 1
 			servingPlayer = 2
-			gameState = 'serve'
-            ball:reset()
+			
+			if player1Score == 10 then
+				winningPlayer = 1
+				gameState = 'done'
+			else
+				gameState = 'serve'
+				ball:reset()
+			end
         end
 	end
 	
@@ -142,11 +155,12 @@ function love.keypressed(key)
 		
 	elseif key == 'enter' or key == 'return' then
 		if gameState == 'start' then
+			gameState = 'serve'
+		elseif gameState == 'serve' then
 			gameState = 'play'
-		else
-			gameState = 'start'
-			
-			ball:reset()
+			-- ball:reset()
+		elseif gameState == 'done' then
+			resetGame()
 		end
 	end
 end
@@ -159,22 +173,27 @@ function love.draw()
 	
 	love.graphics.setFont(smallFont)
 	
+	displayScore()
+	
 	if gameState == 'start' then
-		love.graphics.printf('Hello start state!', 0, 20, VIRTUAL_WIDTH, 'center')
-	else
-		love.graphics.printf('Hello play state!', 0, 20, VIRTUAL_WIDTH, 'center')
-	end
-	
-	
-	-- print the scores
-	love.graphics.setFont(scoreFont)
-	
-	love.graphics.print(tostring(player1Score), VIRTUAL_WIDTH / 2 -50,
-		VIRTUAL_HEIGHT / 3)
-		
-	love.graphics.print(tostring(player2Score), VIRTUAL_WIDTH / 2 + 30,
-		VIRTUAL_HEIGHT / 3)
-	
+        love.graphics.setFont(smallFont)
+        love.graphics.printf('Welcome to Pong!', 0, 10, VIRTUAL_WIDTH, 'center')
+        love.graphics.printf('Press Enter to begin!', 0, 20, VIRTUAL_WIDTH, 'center')
+    elseif gameState == 'serve' then
+        love.graphics.setFont(smallFont)
+        love.graphics.printf('Player ' .. tostring(servingPlayer) .. "'s serve!", 
+            0, 10, VIRTUAL_WIDTH, 'center')
+        love.graphics.printf('Press Enter to serve!', 0, 20, VIRTUAL_WIDTH, 'center')
+    elseif gameState == 'play' then
+        -- no UI messages to display in play
+	elseif gameState == 'done' then
+        -- UI messages
+        love.graphics.setFont(largeFont)
+        love.graphics.printf('Player ' .. tostring(winningPlayer) .. ' wins!',
+            0, 10, VIRTUAL_WIDTH, 'center')
+        love.graphics.setFont(smallFont)
+        love.graphics.printf('Press Enter to restart!', 0, 30, VIRTUAL_WIDTH, 'center')
+    end
 	
 	player1:render() -- left (player 1) paddle
 	
@@ -191,4 +210,30 @@ function displayFPS()
 	love.graphics.setFont(smallFont)
 	love.graphics.setColor(0, 255/255, 0, 255/255)
 	love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
+end
+
+function displayScore()
+	-- print the scores
+	love.graphics.setFont(scoreFont)
+	
+	love.graphics.print(tostring(player1Score), VIRTUAL_WIDTH / 2 -50,
+		VIRTUAL_HEIGHT / 3)
+		
+	love.graphics.print(tostring(player2Score), VIRTUAL_WIDTH / 2 + 30,
+		VIRTUAL_HEIGHT / 3)
+end
+
+function resetGame()
+	gameState = 'serve'
+	
+	ball:reset()
+	
+	player1Score = 0
+	player2Score = 0
+	
+	if winningPlayer == 1 then
+		servingPlayer = 2
+	else
+		servingPlayer = 1
+	end
 end

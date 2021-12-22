@@ -5,8 +5,8 @@ function Ball:init(x, y, width, height)
 	self.y = y
 	self.width = width
 	self.height = height
-	self.dx = math.random(150,250)
-	self.dy = (math.random(-1,1) * math.random(250,250))
+	self.dx = math.random(2) == 1 and math.random(-150,-250) or math.random(150,250)
+	self.dy = math.random(2) == 1 and -150 or 150
 end
 
 function Ball:collides(paddle)
@@ -30,7 +30,7 @@ function Ball:reset()
 	self.x = VIRTUAL_WIDTH / 2 - 2
     self.y = VIRTUAL_HEIGHT / 2 - 2
     self.dx = math.random(150,250)
-	self.dy = (math.random(-1,1) * math.random(250,250))
+	self.dy = math.random(2) == 1 and -150 or 150
 end
 
 function Ball:update(dt)
