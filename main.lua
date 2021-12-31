@@ -1,7 +1,7 @@
-push = require 'push'
-Class = require 'class'
-require 'Paddle'
-require 'Ball'
+push = require 'includes/push'
+Class = require 'includes/class'
+require 'classes/Paddle'
+require 'classes/Ball'
 
 
 WINDOW_WIDTH = 1280
@@ -19,11 +19,11 @@ function love.load()
 	
 	math.randomseed(os.time())
 	
-	smallFont = love.graphics.newFont('font.ttf', 8)
+	smallFont = love.graphics.newFont('fonts/font.ttf', 8)
 	
-	largeFont = love.graphics.newFont('font.ttf', 16)
+	largeFont = love.graphics.newFont('fonts/font.ttf', 16)
 	
-	scoreFont = love.graphics.newFont('font.ttf', 32) -- font for the score(s)
+	scoreFont = love.graphics.newFont('fonts/font.ttf', 32) -- font for the score(s)
 	
 	love.graphics.setFont(smallFont)
 
