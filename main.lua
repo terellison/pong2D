@@ -50,7 +50,7 @@ function love.update(dt)
 	if gameState == 'serve' then
 		ball.dy = math.random(-50,50)
 		
-		ball.dx = math.random(140,100)
+		ball.dx = math.random(100,140)
 		
 		if servingPlayer == 2 then
 			ball.dx = ball.dx * -1
