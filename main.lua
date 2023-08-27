@@ -48,6 +48,8 @@ end
 
 function love.update(dt)
 	if gameState == 'serve' then
+		-- before switching to play, initialize ball's velocity based
+		-- on player who last scored
 		ball.dy = math.random(-50,50)
 		
 		ball.dx = math.random(100,140)
