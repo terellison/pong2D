@@ -26,6 +26,13 @@ function love.load()
 	scoreFont = love.graphics.newFont('fonts/font.ttf', 32) -- font for the score(s)
 	
 	love.graphics.setFont(smallFont)
+	
+	sounds = {
+		['paddle_hit'] = love.audio.newSource('sounds/paddle_hit.wav', 'static'),
+		['score'] = love.audio.newSource('sounds/score.wav', 'static'),
+		['wall_hit'] = love.audio.newSource('sounds/wall_hit.wav', 'static')
+	}
+		
 
 	push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
 		fullscreen = false,
@@ -70,6 +77,7 @@ function love.update(dt)
 			else
 				ball.dy = math.random(10, 150)
 			end
+			sounds['paddle_hit']:play()
 		end
 		
 		if ball:collides(player2) then
@@ -82,18 +90,21 @@ function love.update(dt)
 			else
 				ball.dy = math.random(40, 150)
 			end
+			sounds['paddle_hit']:play()
 		end
 		
 		 -- detect upper and lower screen boundary collision and reverse if collided
         if ball.y <= 0 then
             ball.y = 0
             ball.dy = -ball.dy
+			sounds['wall_hit']:play()
         end
 
         -- -4 to account for the ball's size
         if ball.y >= VIRTUAL_HEIGHT - 4 then
             ball.y = VIRTUAL_HEIGHT - 4
             ball.dy = -ball.dy
+			sounds['wall_hit']:play()
         end
 		
 		-- same for left and right bounds
@@ -107,6 +118,7 @@ function love.update(dt)
 				gameState = 'serve'
 				ball:reset()
 			end
+		sounds['score']:play()
         end
 
         -- -4 to account for the ball's size
@@ -121,6 +133,7 @@ function love.update(dt)
 				gameState = 'serve'
 				ball:reset()
 			end
+			sounds['score']:play()
         end
 	end
 	
