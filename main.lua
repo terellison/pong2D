@@ -28,9 +28,9 @@ function love.load()
 	love.graphics.setFont(smallFont)
 	
 	sounds = {
-		['paddle_hit'] = love.audio.newSource('sounds/paddle_hit.wav', 'static'),
-		['score'] = love.audio.newSource('sounds/score.wav', 'static'),
-		['wall_hit'] = love.audio.newSource('sounds/wall_hit.wav', 'static')
+		['paddle_hit'] = love.audio.newSource('sounds/paddle_hit.wav', 'static')
+		-- ['score'] = love.audio.newSource('sounds/score.wav', 'static'),
+		--['wall_hit'] = love.audio.newSource('sounds/wall_hit.wav', 'static')
 	}
 		
 
@@ -97,14 +97,14 @@ function love.update(dt)
         if ball.y <= 0 then
             ball.y = 0
             ball.dy = -ball.dy
-			sounds['wall_hit']:play()
+			--sounds['wall_hit']:play()
         end
 
         -- -4 to account for the ball's size
         if ball.y >= VIRTUAL_HEIGHT - 4 then
             ball.y = VIRTUAL_HEIGHT - 4
             ball.dy = -ball.dy
-			sounds['wall_hit']:play()
+			--sounds['wall_hit']:play()
         end
 		
 		-- same for left and right bounds
@@ -118,7 +118,7 @@ function love.update(dt)
 				gameState = 'serve'
 				ball:reset()
 			end
-		sounds['score']:play()
+		--sounds['score']:play()
         end
 
         -- -4 to account for the ball's size
@@ -133,7 +133,7 @@ function love.update(dt)
 				gameState = 'serve'
 				ball:reset()
 			end
-			sounds['score']:play()
+			--sounds['score']:play()
         end
 	end
 	
